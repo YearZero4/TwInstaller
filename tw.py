@@ -65,6 +65,7 @@ def help():
  {YELLOW}delete {WHITE}: Eliminar dependencias del proyecto
  {YELLOW}execute{WHITE} : Ejecutar tailwindcss en proyecto
  {YELLOW}list{WHITE}: Listar CDN para usar en el index.html 
+ {YELLOW}restore_modules{WHITE}: restaura node_modules 
  """)
 
 def delete(comp):
@@ -133,6 +134,20 @@ def project():
  except:
   install()
 
+
+def restore_modules():
+ modules = os.path.join(os.getcwd(), 'node_modules')
+ if os.path.exists(modules):
+  shutil.rmtree(modules)
+ zip_path = os.path.join(DIR_TW, "install.zip")
+ extract_dir = os.getcwd()
+ with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+  for file in zip_ref.namelist():
+   if file.startswith("node_modules/"):
+    zip_ref.extract(file, extract_dir)
+    print(f"Extrayendo: {file}")
+ 
+
 listCDN=f'''
 https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4
 https://cdn.tailwindcss.com/3.4.16
@@ -161,6 +176,8 @@ def selOption(opc):
   os.system(f'npx tailwindcss -i {input_css} -o {output_css} --watch')
  elif opc == 'list':
   print(listCDN)
+ elif opc == "restore_modules":
+  restore_modules()
  else:
   print("Opcion Invalida...")
 
